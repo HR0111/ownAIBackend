@@ -17,7 +17,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
+                        .allowedOrigins("https://own-ai-frontend.vercel.app/")
                         .allowedMethods("*");
             }
         };
