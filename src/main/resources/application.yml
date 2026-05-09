@@ -16,7 +16,7 @@ spring:
   ai:
     openai:
       api-key: ${OPENROUTER_API_KEY}
-      base-url: https://openrouter.ai/api
+      base-url: https://openrouter.ai/api/v1
       chat:
         options:
           model: openai/gpt-4.1-mini
