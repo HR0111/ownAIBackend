@@ -56,52 +56,43 @@ public class RagController {
 
 
     @PostMapping("/ask")
-    public Map<String, Object> ask(
-            @RequestBody AskRequest request
-    ) {
+    public Map<String, Object> ask(@RequestBody AskRequest request) {
 
-        List<Double> questionEmbedding =
-                embeddingService.embed(
-                        request.getQuestion()
-                );
+        List<Double> questionEmbedding = embeddingService.embed(request.getQuestion());
 
-        List<Map<String, Object>> contexts =
-                vectorRepository.search(
-                        questionEmbedding.toString(),
-                        request.getK()
-                );
+        List<Map<String, Object>> rawContexts = vectorRepository.search(
+                questionEmbedding.toString(), request.getK()
+        );
+
+        // Frontend ke liye format fix karo
+        List<Map<String, Object>> contexts = rawContexts.stream().map(c -> {
+            Map<String, Object> ctx = new HashMap<>();
+            ctx.put("title", c.get("title"));
+            ctx.put("text", c.get("content"));   // content → text
+            ctx.put("distance", c.get("distance"));
+            return ctx;
+        }).collect(Collectors.toList());
 
         String contextText = contexts.stream()
-                .map(c -> c.get("content").toString())
+                .map(c -> c.get("text").toString())
                 .collect(Collectors.joining("\n\n"));
 
         String prompt = """
-                You are a helpful AI assistant.
+            You are a helpful AI assistant.
+            Use ONLY the context below.
+            Context:
+            %s
+            Question:
+            %s
+            """.formatted(contextText, request.getQuestion());
 
-                Use ONLY the context below.
+        String answer = chatClientBuilder.build()
+                .prompt().user(prompt).call().content();
 
-                Context:
-                %s
-
-                Question:
-                %s
-                """.formatted(
-                contextText,
-                request.getQuestion()
-        );
-
-        String answer = chatClientBuilder
-                .build()
-                .prompt()
-                .user(prompt)
-                .call()
-                .content();
-
-        Map<String, Object> response =
-                new HashMap<>();
-
+        Map<String, Object> response = new HashMap<>();
         response.put("answer", answer);
         response.put("contexts", contexts);
+        response.put("model", "gpt-4.1-mini");  // frontend display ke liye
 
         return response;
     }

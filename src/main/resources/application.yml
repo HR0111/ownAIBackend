@@ -29,4 +29,8 @@ server:
 
 logging:
   level:
+<<<<<<< HEAD
     org.springframework.boot.context.config: DEBUG
+=======
+    org.springframework.boot.context.config: DEBUG
+>>>>>>> 0144508 (some changes commit)
