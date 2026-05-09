@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: ownAi
+
+server:
+  port: 8080
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  ai:
+    openai:
+      api-key: ${OPENROUTER_API_KEY}
+      base-url: https://openrouter.ai/api
+
+      chat:
+        options:
+          model: openai/gpt-4.1-mini
+
+      embedding:
+        options:
+          model: text-embedding-3-small
+
+
