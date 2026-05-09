@@ -4,13 +4,12 @@ spring:
 
   datasource:
     url: ${DATABASE_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   ai:
     openai:
@@ -25,3 +24,7 @@ spring:
 
 server:
   port: 8080
+
+logging:
+  level:
+    org.springframework.boot.context.config: DEBUG
