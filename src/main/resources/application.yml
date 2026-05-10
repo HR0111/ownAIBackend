@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   ai:
@@ -19,7 +19,8 @@ spring:
       base-url: https://openrouter.ai/api/v1
       chat:
         options:
-          model: openai/gpt-4.1-mini
+          model: nvidia/nemotron-3-nano-30b-a3b:free
+          max-tokens: 500
       embedding:
         options:
           model: text-embedding-3-small
@@ -29,4 +30,8 @@ server:
 
 logging:
   level:
-    org.springframework.boot.context.config: DEBUG
+    root: ERROR
+    com.ownai: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.ai: ERROR
+    com.zaxxer.hikari: DEBUG

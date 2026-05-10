@@ -23,6 +23,6 @@ public class DocumentChunk {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "vector(1536)")
     private String embedding;
 }

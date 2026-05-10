@@ -13,23 +13,23 @@ public class VectorSearchRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Map<String, Object>> search(
-            String embedding,
-            int k
-    ) {
+    public void insert(String title, String content, String embedding) {
+        jdbcTemplate.update(
+                "INSERT INTO document_chunks (title, content, embedding) VALUES (?, ?, CAST(? AS vector))",
+                title, content, embedding
+        );
+    }
 
-        String sql = """
-            SELECT id, title, content,
-            embedding <=> CAST(? AS vector) AS distance
-            FROM document_chunks
-            ORDER BY distance
-            LIMIT ?
-        """;
-
+    public List<Map<String, Object>> search(String embedding, int k) {
         return jdbcTemplate.queryForList(
-                sql,
-                embedding,
-                k
+                """
+                SELECT id, title, content,
+                       embedding <=> CAST(? AS vector) AS distance
+                FROM document_chunks
+                ORDER BY distance
+                LIMIT ?
+                """,
+                embedding, k
         );
     }
 }

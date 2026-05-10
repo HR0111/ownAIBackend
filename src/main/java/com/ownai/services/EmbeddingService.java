@@ -2,12 +2,7 @@ package com.ownai.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.embedding.EmbeddingRequest;
-import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,16 +10,14 @@ public class EmbeddingService {
 
     private final EmbeddingModel embeddingModel;
 
-    public List<Double> embed(String text) {
-
+    public String embedAsVector(String text) {
         float[] embedding = embeddingModel.embed(text);
-
-        List<Double> vector = new ArrayList<>();
-
-        for (float value : embedding) {
-            vector.add((double) value);
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < embedding.length; i++) {
+            sb.append(embedding[i]);
+            if (i < embedding.length - 1) sb.append(",");
         }
-
-        return vector;
+        sb.append("]");
+        return sb.toString();
     }
 }
