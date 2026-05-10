@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-
 @Repository
 @RequiredArgsConstructor
 public class VectorSearchRepository {
@@ -21,6 +20,10 @@ public class VectorSearchRepository {
     }
 
     public List<Map<String, Object>> search(String embedding, int k) {
+        // ← embedding already [..] format mein aata hai EmbeddingService se
+        // lekin agar nahi aaya toh wrap karo
+        String vector = embedding.startsWith("[") ? embedding : "[" + embedding + "]";
+
         return jdbcTemplate.queryForList(
                 """
                 SELECT id, title, content,
@@ -29,7 +32,7 @@ public class VectorSearchRepository {
                 ORDER BY distance
                 LIMIT ?
                 """,
-                embedding, k
+                vector, k
         );
     }
 }
